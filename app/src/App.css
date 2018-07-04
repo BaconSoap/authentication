@@ -26,3 +26,36 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form .input-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 30%;
+}
+
+.form .input-item label {
+  flex: 1;
+  text-align: left;
+}
+
+.form .input-item input {
+  flex: 2;
+}
+
+button {
+  border: 0;
+  padding: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button.primary {
+  background-color: skyblue;
+}
