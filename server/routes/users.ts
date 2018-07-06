@@ -2,8 +2,9 @@ import { Application } from "express";
 import { asyncHandler, validationHandler, postValidatedAsync, getAsync } from "./routeUtils";
 import { User } from "../model";
 import Joi from 'joi';
+import Sequelize from 'sequelize';
 
-const passwordErrorCreator = () => ({ message: 'Invalid Password', type: 'string', path: ['password'] });
+const passwordErrorCreator = () => ({ message: 'Invalid password', type: 'string', path: ['password'] });
 
 const userRegistrationSchema = Joi.object().keys({
   email: Joi.string().email().required(),
@@ -13,6 +14,15 @@ const userRegistrationSchema = Joi.object().keys({
 export const registerUsersRoutes = (app: Application) => {
   postValidatedAsync(app, '/api/users', userRegistrationSchema, async (req, res) => {
     const { email, password } = req.body;
+
+    const countUsersWithEmail = await User.count({
+      where: Sequelize.where(Sequelize.fn('lower', Sequelize.col('email')), email.toLowerCase()) as any
+    });
+
+    if (countUsersWithEmail > 0) {
+      res.status(400).send({ isValidationError: true, details: [{ message: 'User with same email already exists' }] });
+      return;
+    }
 
     const created = await User.create({
       email,

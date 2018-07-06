@@ -56,6 +56,9 @@ export class RegisterForm extends React.PureComponent<{}, RegisterFormState> {
         errored: false,
         succeeded: true
       });
+
+      emailInput.value = '';
+      passwordInput.value = '';
     } catch (e) {
       const error = e as AxiosError;
 

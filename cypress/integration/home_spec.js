@@ -4,36 +4,19 @@ describe('home page', () => {
     cy.visit('http://localhost:3000/');
   });
 
-  it('should have basic inputs for registering', () => {
-    cy.get('#register-email-input')
-      .type('andrew@varnerin.info')
-      .should('have.value', 'andrew@varnerin.info')
-      .and('have.attr', 'type', 'email');
-
-    cy.get('#register-password-input')
-      .type('asdf123')
-      .should('have.value', 'asdf123')
-      .and('have.attr', 'type', 'password');
-  });
-
   it('should allow registering a new user', () => {
-    const email = faker.internet.email();
-    const password = faker.internet.password(12);
+    fillEmailPassword();
 
-    cy.get('#register-email-input')
-      .type(email);
-    cy.get('#register-password-input')
-      .type(password);
-
-    cy.get('#registration-form button')
-      .click();
-
-    cy.get('#register-email-input')
-      .should('have.value', email);
+    clickRegister();
 
     cy.get('#message')
       .should('have.text', 'Registered')
       .and('have.class', 'alert-success');
+
+    cy.get('#register-email-input')
+      .should('have.value', '');
+    cy.get('#register-password-input')
+      .should('have.value', '');
   });
 
   it('should not allow registering with an invalid email or short password', () => {
@@ -45,14 +28,56 @@ describe('home page', () => {
     cy.get('#register-password-input')
       .type(password);
 
-    cy.get('#registration-form button')
-      .click();
+    clickRegister();
 
     cy.get('#message')
       .should('contain', 'Failed')
       .and('contain', 'email')
       .and('contain', 'password')
       .and('have.class', 'alert-error');
+
+    cy.get('#register-email-input')
+      .should('have.value', email);
+    cy.get('#register-password-input')
+      .should('have.value', password);
+
+  });
+
+  it('should not allow registering the same email twice', () => {
+    const { email, password } = fillEmailPassword();
+    clickRegister();
+
+    cy.get('#message')
+      .should('have.text', 'Registered')
+      .and('have.class', 'alert-success');
+
+    cy.get('#register-email-input')
+      .type(email);
+    cy.get('#register-password-input')
+      .type(password);
+
+    clickRegister();
+
+    cy.get('#message')
+      .should('contain', 'Failed')
+      .and('contain', 'email')
+      .and('contain', 'already');
   });
 
 });
+
+function clickRegister() {
+  cy.get('#registration-form button')
+    .click();
+}
+
+function fillEmailPassword() {
+  const email = faker.internet.email();
+  const password = faker.internet.password(12);
+  cy.get('#register-email-input')
+    .type(email);
+  cy.get('#register-password-input')
+    .type(password);
+
+  return { email, password };
+}
