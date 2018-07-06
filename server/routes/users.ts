@@ -2,7 +2,7 @@ import { Application } from 'express';
 import Joi from 'joi';
 import Sequelize from 'sequelize';
 import { User } from '../model';
-import { hashPassword } from '../util/hashPassword';
+import { compareUsers, hashPassword } from '../util/hashPassword';
 import { getAsync, postValidatedAsync } from './routeUtils';
 
 const passwordErrorCreator = () => ({ message: 'Invalid password', type: 'string', path: ['password'] });
@@ -33,6 +33,28 @@ export const registerUsersRoutes = (app: Application) => {
 
     res.status(201).send(created);
   });
+
+  postValidatedAsync(app, '/api/users/login', userRegistrationSchema, async (req, res) => {
+    const { email, password } = req.body;
+
+    const existingUser = await User.findOne({
+      where: Sequelize.where(Sequelize.fn('lower', Sequelize.col('email')), email.toLowerCase()) as any,
+    });
+
+    // hash of ' ', which can't be supplied by a real user
+    const fakeHash = '$2b$10$R7KQwzIA265h8lYcTkZau.P2ONRQ3zlIMPGK30wbzuwNX26oW09gG';
+    const existingPassword = existingUser ? existingUser.password : fakeHash;
+
+    const isValid = await compareUsers(existingPassword, password);
+
+    if (!isValid) {
+      res.status(404).send({ isValidationError: false, message: 'Invalid email or password' });
+      return;
+    }
+
+    res.status(201).send({ jwt: 'some nonsense' });
+  });
+
 
   getAsync(app, '/api/users/:userId', async (req, res) => {
     const userId = req.params.userId;
