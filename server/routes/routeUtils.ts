@@ -1,5 +1,6 @@
 import { Request, Response, Handler } from "express";
 import Joi from 'joi';
+import { Application, PathParams } from "../node_modules/@types/express-serve-static-core";
 
 export const asyncHandler = (handler: (req: Request, res: Response) => Promise<void>) => {
   return (req: Request, res: Response) => {
@@ -28,4 +29,12 @@ export const validationHandler = (validator: Joi.Schema, next: (req: Request, re
 
     next(req, res);
   }
+}
+
+export const postValidatedAsync = (app: Application, route: PathParams, schema: Joi.Schema, handler: (req: Request, res: Response) => Promise<any>) => {
+  app.post(route, validationHandler(schema, asyncHandler(handler)));
+}
+
+export const getAsync = (app: Application, route: PathParams, handler: (req: Request, res: Response) => Promise<any>) => {
+  app.get(route, asyncHandler(handler));
 }

@@ -1,5 +1,5 @@
 import { Application } from "express";
-import { asyncHandler, validationHandler } from "./routeUtils";
+import { asyncHandler, validationHandler, postValidatedAsync, getAsync } from "./routeUtils";
 import { User } from "../model";
 import Joi from 'joi';
 
@@ -9,7 +9,7 @@ const userRegistrationSchema = Joi.object().keys({
 });
 
 export const registerUsersRoutes = (app: Application) => {
-  app.post('/api/users', validationHandler(userRegistrationSchema, asyncHandler(async (req, res) => {
+  postValidatedAsync(app, '/api/users', userRegistrationSchema, async (req, res) => {
     const { email, password } = req.body;
 
     const created = await User.create({
@@ -18,9 +18,9 @@ export const registerUsersRoutes = (app: Application) => {
     });
 
     res.status(201).send(created);
-  })));
+  });
 
-  app.get('/api/users/:userId', asyncHandler(async (req, res) => {
+  getAsync(app, '/api/users/:userId', async (req, res) => {
     const userId = req.params['userId'];
     if (isNaN(parseInt(userId))) {
       res.sendStatus(400);
@@ -35,6 +35,6 @@ export const registerUsersRoutes = (app: Application) => {
     }
 
     res.send(user);
-  }));
+  });
 };
 

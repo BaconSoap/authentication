@@ -19,8 +19,10 @@
     "typescript": "^2.9.2"
   },
   "scripts": {
-    "start": "ts-node index.ts",
+    "start": "nodemon --exec 'ts-node' ./index.ts",
     "cypress:open": "cypress open"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^1.17.5"
+  }
 }
