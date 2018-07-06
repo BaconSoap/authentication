@@ -2,7 +2,8 @@ import { Application } from 'express';
 import Joi from 'joi';
 import Sequelize from 'sequelize';
 import { User } from '../model';
-import { asyncHandler, getAsync, postValidatedAsync, validationHandler } from './routeUtils';
+import { hashPassword } from '../util/hashPassword';
+import { getAsync, postValidatedAsync } from './routeUtils';
 
 const passwordErrorCreator = () => ({ message: 'Invalid password', type: 'string', path: ['password'] });
 
@@ -24,9 +25,10 @@ export const registerUsersRoutes = (app: Application) => {
       return;
     }
 
+    const hashedPassword = await hashPassword(password);
     const created = await User.create({
       email,
-      password,
+      password: hashedPassword,
     });
 
     res.status(201).send(created);
