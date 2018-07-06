@@ -1,8 +1,8 @@
-import { Application } from "express";
-import { asyncHandler, validationHandler, postValidatedAsync, getAsync } from "./routeUtils";
-import { User } from "../model";
+import { Application } from 'express';
 import Joi from 'joi';
 import Sequelize from 'sequelize';
+import { User } from '../model';
+import { asyncHandler, getAsync, postValidatedAsync, validationHandler } from './routeUtils';
 
 const passwordErrorCreator = () => ({ message: 'Invalid password', type: 'string', path: ['password'] });
 
@@ -16,7 +16,7 @@ export const registerUsersRoutes = (app: Application) => {
     const { email, password } = req.body;
 
     const countUsersWithEmail = await User.count({
-      where: Sequelize.where(Sequelize.fn('lower', Sequelize.col('email')), email.toLowerCase()) as any
+      where: Sequelize.where(Sequelize.fn('lower', Sequelize.col('email')), email.toLowerCase()) as any,
     });
 
     if (countUsersWithEmail > 0) {
@@ -26,15 +26,15 @@ export const registerUsersRoutes = (app: Application) => {
 
     const created = await User.create({
       email,
-      password
+      password,
     });
 
     res.status(201).send(created);
   });
 
   getAsync(app, '/api/users/:userId', async (req, res) => {
-    const userId = req.params['userId'];
-    if (isNaN(parseInt(userId))) {
+    const userId = req.params.userId;
+    if (isNaN(parseInt(userId, 10))) {
       res.sendStatus(400);
       return;
     }

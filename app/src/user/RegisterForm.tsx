@@ -8,7 +8,7 @@ type RegisterFormState = {
   succeeded: boolean;
   errored: boolean;
   validationErrors: string[];
-}
+};
 
 export class RegisterForm extends React.PureComponent<{}, RegisterFormState> {
   private emailInput: React.RefObject<HTMLInputElement>;
@@ -54,7 +54,7 @@ export class RegisterForm extends React.PureComponent<{}, RegisterFormState> {
 
       this.setState({
         errored: false,
-        succeeded: true
+        succeeded: true,
       });
 
       emailInput.value = '';
@@ -68,14 +68,14 @@ export class RegisterForm extends React.PureComponent<{}, RegisterFormState> {
         this.setState({
           errored: true,
           succeeded: false,
-          validationErrors: validation.details.map(v => v.message)
+          validationErrors: validation.details.map(v => v.message),
         });
       } else {
         this.setState({
           errored: true,
           succeeded: false,
-          validationErrors: []
-        })
+          validationErrors: [],
+        });
       }
     }
 
@@ -86,4 +86,4 @@ export class RegisterForm extends React.PureComponent<{}, RegisterFormState> {
 export type ApiValidationError = {
   isValidationError: true;
   details: ValidationErrorItem[];
-}
+};

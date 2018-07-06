@@ -17,6 +17,16 @@
       "jsx-double"
     ],
     "jsx-no-lambda": false,
-    "interface-over-type-literal": false
+    "interface-over-type-literal": false,
+    "semicolon": true,
+    "no-console": false,
+    "no-debugger": false,
+    "trailing-comma": [
+      true,
+      {
+        "multiline": "always",
+        "singleline": "never"
+      }
+    ]
   }
 }

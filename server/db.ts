@@ -2,8 +2,8 @@ import Sequelize from 'sequelize';
 
 export const sequelize = new Sequelize('authentication', '', '', {
   dialect: 'sqlite',
-  storage: './authentication.sqlite',
   operatorsAliases: false,
+  storage: './authentication.sqlite',
 });
 
 export const test = async () => {
