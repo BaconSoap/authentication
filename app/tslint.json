@@ -16,6 +16,7 @@
       "single",
       "jsx-double"
     ],
-    "jsx-no-lambda": false
+    "jsx-no-lambda": false,
+    "interface-over-type-literal": false
   }
 }

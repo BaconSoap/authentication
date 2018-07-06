@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
 }
@@ -58,4 +62,21 @@ button {
 
 button.primary {
   background-color: skyblue;
+}
+
+.alert {
+  width: calc(100% - 12px);
+  padding: 16px;
+  background-color: lightgray;
+  border: 1px solid black;
+  margin: 6px;
+}
+
+.alert.alert-success {
+  background-color: rgb(112, 219, 85);
+}
+
+.alert.alert-error {
+  background-color: #ffb1b1;
+  color: rgb(112, 0, 0);
 }
