@@ -3,9 +3,11 @@ import { asyncHandler, validationHandler, postValidatedAsync, getAsync } from ".
 import { User } from "../model";
 import Joi from 'joi';
 
+const passwordErrorCreator = () => ({ message: 'Invalid Password', type: 'string', path: ['password'] });
+
 const userRegistrationSchema = Joi.object().keys({
   email: Joi.string().email().required(),
-  password: Joi.string().min(8).max(32).required(),
+  password: Joi.string().min(8).max(32).required().error(passwordErrorCreator),
 });
 
 export const registerUsersRoutes = (app: Application) => {
