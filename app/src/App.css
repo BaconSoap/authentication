@@ -13,9 +13,11 @@
 
 .App-header {
   background-color: #222;
-  height: 150px;
-  padding: 20px;
+  height: 75px;
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .App-title {
@@ -79,4 +81,17 @@ button.primary {
 .alert.alert-error {
   background-color: #ffb1b1;
   color: rgb(112, 0, 0);
+}
+
+.user-info-bar {
+  display: flex;
+  background-color: rgb(131, 131, 131);
+  border: 1px solid rgb(41, 41, 41);
+  height: 30px;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.user-info-bar-text {
+  margin-left: auto;
 }

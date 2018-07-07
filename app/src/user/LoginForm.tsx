@@ -1,14 +1,18 @@
 import Axios, { AxiosError } from 'axios';
 import * as React from 'react';
 import { Alert } from '../Alert';
+import { DecodedJwt, decodeToken, isTokenValid, saveToken } from '../authStorage';
 import { Input } from '../Input';
 
+type LoginFormProps = {
+  onLoggedIn?: (jwt: DecodedJwt) => void;
+};
 type LoginFormState = { jwt: null; errorMessage: string | null };
-export class LoginForm extends React.PureComponent<{}, LoginFormState> {
+export class LoginForm extends React.PureComponent<LoginFormProps, LoginFormState> {
   private emailInput: React.RefObject<HTMLInputElement>;
   private passwordInput: React.RefObject<HTMLInputElement>;
 
-  public constructor(props: {}) {
+  public constructor(props: LoginFormProps) {
     super(props);
 
     this.emailInput = React.createRef();
@@ -48,6 +52,14 @@ export class LoginForm extends React.PureComponent<{}, LoginFormState> {
 
       emailInput.value = '';
       passwordInput.value = '';
+
+      const decoded = decodeToken(res.data.jwt);
+      if (isTokenValid(decoded)) {
+        saveToken(res.data.jwt);
+        if (this.props.onLoggedIn) {
+          this.props.onLoggedIn(decoded);
+        }
+      }
     } catch (e) {
       const error = e as AxiosError;
 

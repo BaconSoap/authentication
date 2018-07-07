@@ -2,7 +2,7 @@ const storageKey = 'login_jwt';
 
 export const saveToken = (token: string) => localStorage.setItem(storageKey, token);
 export const loadToken = () => localStorage.getItem(storageKey);
-export const decodeToken = (encoded: string): DecodedJwt | null => {
+export const decodeToken = (encoded: string | null): DecodedJwt | null => {
   if (!encoded) {
     return null;
   }
@@ -18,12 +18,13 @@ export const decodeToken = (encoded: string): DecodedJwt | null => {
     payload: JSON.parse(atob(payload)),
   } as DecodedJwt;
 };
-export const isTokenValid = (token: DecodedJwt | null): boolean => {
+
+export const isTokenValid = (token: DecodedJwt | null): token is DecodedJwt => {
   if (!token) {
     return false;
   }
 
-  if (token.payload.exp < new Date().getTime()) {
+  if (token.payload.exp < new Date().getTime() / 1000) {
     return false;
   }
 

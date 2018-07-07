@@ -100,7 +100,7 @@ describe('logging in', () => {
     fillLoginEmailPassword(email, password);
     clickLogin();
 
-    verifyLoggedIn();
+    verifyLoggedIn(email);
   });
 });
 
@@ -139,10 +139,13 @@ function fillLoginEmailPassword(email, password) {
     .type(password);
 }
 
-function verifyLoggedIn() {
+function verifyLoggedIn(email) {
   cy.get('#login-message')
     .should('contain', 'Logged in')
     .and('have.class', 'alert-success');
+
+  cy.get('.user-info-bar-text')
+    .should('contain', email);
 }
 
 function verifyNotLoggedIn() {
@@ -150,4 +153,7 @@ function verifyNotLoggedIn() {
     .should('contain', 'email')
     .and('contain', 'password')
     .and('have.class', 'alert-error');
+
+  cy.get('.user-info-bar-text')
+    .should('contain', 'Not logged in');
 }
