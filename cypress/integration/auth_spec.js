@@ -1,6 +1,21 @@
 const faker = require('faker');
+
+let jwt = '';
+
+before(() => {
+  const email = faker.internet.email();
+  const password = faker.internet.password(24);
+
+  cy.request('POST', 'http://localhost:3001/api/users', { email, password });
+  cy.request('POST', 'http://localhost:3001/api/users/login', { email, password }).then(res => {
+    jwt = res.body.jwt;
+  });
+});
+
 describe('registration', () => {
+
   beforeEach(() => {
+    console.log(jwt);
     cy.visit('http://localhost:3000/');
   });
 

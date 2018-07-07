@@ -31,10 +31,10 @@ export class RegisterForm extends React.PureComponent<{}, RegisterFormState> {
       <form className="form" id="registration-form">
         {this.state.succeeded && <Alert type="success" id="message">Registered</Alert>}
         {this.state.errored && <Alert type="error" id="message">Failed to register: <br /> {this.state.validationErrors.map(v => (
-          <>
+          <React.Fragment key={v}>
             {v}
             <br />
-          </>
+          </React.Fragment>
         ))}</Alert>}
         <Input id="register-email-input" title="Email" placeholder="Email" type="email" innerRef={this.emailInput} />
         <Input id="register-password-input" title="Password" placeholder="Password" type="password" innerRef={this.passwordInput} />

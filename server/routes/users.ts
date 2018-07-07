@@ -2,7 +2,9 @@ import { Application } from 'express';
 import Joi from 'joi';
 import Sequelize from 'sequelize';
 import { User } from '../model';
+import { whereByEmail } from '../model/User';
 import { compareUsers, hashPassword } from '../util/hashPassword';
+import { createJwt } from '../util/jwtHelpers';
 import { getAsync, postValidatedAsync } from './routeUtils';
 
 const passwordErrorCreator = () => ({ message: 'Invalid password', type: 'string', path: ['password'] });
@@ -17,7 +19,7 @@ export const registerUsersRoutes = (app: Application) => {
     const { email, password } = req.body;
 
     const countUsersWithEmail = await User.count({
-      where: Sequelize.where(Sequelize.fn('lower', Sequelize.col('email')), email.toLowerCase()) as any,
+      where: whereByEmail(email) as any,
     });
 
     if (countUsersWithEmail > 0) {
@@ -38,7 +40,7 @@ export const registerUsersRoutes = (app: Application) => {
     const { email, password } = req.body;
 
     const existingUser = await User.findOne({
-      where: Sequelize.where(Sequelize.fn('lower', Sequelize.col('email')), email.toLowerCase()) as any,
+      where: whereByEmail(email),
     });
 
     // hash of ' ', which can't be supplied by a real user
@@ -47,12 +49,12 @@ export const registerUsersRoutes = (app: Application) => {
 
     const isValid = await compareUsers(existingPassword, password);
 
-    if (!isValid) {
+    if (!isValid || !existingUser) {
       res.status(404).send({ isValidationError: false, message: 'Invalid email or password' });
       return;
     }
 
-    res.status(201).send({ jwt: 'some nonsense' });
+    res.status(201).send({ jwt: createJwt(existingUser.get()) });
   });
 
 
