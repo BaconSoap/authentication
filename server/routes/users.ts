@@ -1,6 +1,5 @@
 import { Application } from 'express';
 import Joi from 'joi';
-import Sequelize from 'sequelize';
 import { User } from '../model';
 import { whereByEmail } from '../model/User';
 import { compareUsers, hashPassword } from '../util/hashPassword';

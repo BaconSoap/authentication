@@ -31,10 +31,22 @@ export const validationHandler = (validator: Joi.Schema, next: (req: Request, re
   };
 };
 
+export const ensureValidRoute = (route: PathParams): void => {
+  if (typeof route === 'string') {
+    if (route[0] !== '/') {
+      throw new Error(`Route ${route} is invalid, all routes must start with a leading slash /`);
+    }
+  }
+};
+
 export const postValidatedAsync = (app: Application, route: PathParams, schema: Joi.Schema, handler: (req: Request, res: Response) => Promise<any>) => {
+  console.log(`initializing POST ${route.toString()} with validation`);
+  ensureValidRoute(route);
   app.post(route, validationHandler(schema, asyncHandler(handler)));
 };
 
 export const getAsync = (app: Application, route: PathParams, handler: (req: Request, res: Response) => Promise<any>) => {
+  console.log(`initializing GET ${route.toString()} without validation`);
+  ensureValidRoute(route);
   app.get(route, asyncHandler(handler));
 };

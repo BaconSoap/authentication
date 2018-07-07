@@ -9,10 +9,6 @@ const app = express();
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(json());
 
-app.get('/', (req, res) => {
-  res.send('hi');
-});
-
 testDb();
 initAllModels();
 registerRoutes(app);

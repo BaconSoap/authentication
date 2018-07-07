@@ -2,6 +2,7 @@ import Sequelize from 'sequelize';
 
 export const sequelize = new Sequelize('authentication', '', '', {
   dialect: 'sqlite',
+  logging: undefined,
   operatorsAliases: false,
   storage: './authentication.sqlite',
 });
