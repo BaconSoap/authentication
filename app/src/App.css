@@ -90,8 +90,9 @@ button.primary {
   height: 30px;
   align-items: center;
   padding: 0 24px;
+  justify-content: flex-end;
 }
 
 .user-info-bar-text {
-  margin-left: auto;
+  margin-left: 16px;
 }

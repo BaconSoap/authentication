@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './App.css';
 
-import { DecodedJwt, decodeToken, isTokenValid, loadToken } from './authStorage';
+import { clearToken, DecodedJwt, decodeToken, isTokenValid, loadToken } from './authStorage';
 import { LoginForm } from './user/LoginForm';
 import { RegisterForm } from './user/RegisterForm';
 import { UserInfoBar } from './user/UserInfoBar';
@@ -30,7 +30,7 @@ class App extends React.Component<{}, AppState> {
         <header className="App-header">
           <h1 className="App-title">Auth Playground</h1>
         </header>
-        <UserInfoBar jwt={this.state.jwt} />
+        <UserInfoBar jwt={this.state.jwt} onLogOut={this.onLogOut} />
         <p className="App-intro">
           To get started, edit <code>src/App.tsx</code> and save to reload.
         </p>
@@ -42,6 +42,11 @@ class App extends React.Component<{}, AppState> {
 
   private onLoggedIn = (jwt: DecodedJwt) => {
     this.setState({ jwt });
+  }
+
+  private onLogOut = () => {
+    clearToken();
+    this.setState({ jwt: null });
   }
 }
 

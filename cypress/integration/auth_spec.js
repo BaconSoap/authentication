@@ -90,6 +90,7 @@ describe('logging in', () => {
     clickLogin();
 
     verifyNotLoggedIn();
+    verifyLoginFailedMessage();
   });
 
   it('allows logging in with correct info', () => {
@@ -99,6 +100,38 @@ describe('logging in', () => {
 
     fillLoginEmailPassword(email, password);
     clickLogin();
+
+    verifyLoginMessage();
+    verifyLoggedIn(email);
+  });
+});
+
+describe.only('logging out', () => {
+  it('works', () => {
+    cy.visit('http://localhost:3000/');
+
+    const { email, password } = fillRegisterEmailPassword();
+
+    clickRegister();
+    verifyRegistered();
+
+    fillLoginEmailPassword(email, password);
+    clickLogin();
+
+    verifyLoginMessage();
+    verifyLoggedIn(email);
+
+    clickLogOut();
+    verifyNotLoggedIn();
+  })
+});
+
+describe('loading from stored jwt', () => {
+  it('works', () => {
+    localStorage.setItem('login_jwt', jwt);
+    const email = JSON.parse(atob(jwt.split('.')[1])).email;
+
+    cy.visit('http://localhost:3000/');
 
     verifyLoggedIn(email);
   });
@@ -117,6 +150,11 @@ function clickRegister() {
 
 function clickLogin() {
   cy.get('#login-form button')
+    .click();
+}
+
+function clickLogOut() {
+  cy.get('#logout')
     .click();
 }
 
@@ -139,21 +177,25 @@ function fillLoginEmailPassword(email, password) {
     .type(password);
 }
 
-function verifyLoggedIn(email) {
+function verifyLoginMessage() {
   cy.get('#login-message')
     .should('contain', 'Logged in')
     .and('have.class', 'alert-success');
+}
 
+function verifyLoggedIn(email) {
   cy.get('.user-info-bar-text')
     .should('contain', email);
 }
 
-function verifyNotLoggedIn() {
+function verifyLoginFailedMessage() {
   cy.get('#login-message')
     .should('contain', 'email')
     .and('contain', 'password')
     .and('have.class', 'alert-error');
+}
 
+function verifyNotLoggedIn() {
   cy.get('.user-info-bar-text')
     .should('contain', 'Not logged in');
 }

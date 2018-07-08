@@ -2,6 +2,8 @@ const storageKey = 'login_jwt';
 
 export const saveToken = (token: string) => localStorage.setItem(storageKey, token);
 export const loadToken = () => localStorage.getItem(storageKey);
+export const clearToken = () => localStorage.removeItem(storageKey);
+
 export const decodeToken = (encoded: string | null): DecodedJwt | null => {
   if (!encoded) {
     return null;
