@@ -56,6 +56,7 @@ export class LoginForm extends React.PureComponent<LoginFormProps, LoginFormStat
       const decoded = decodeToken(res.data.jwt);
       if (isTokenValid(decoded)) {
         saveToken(res.data.jwt);
+        Axios.defaults.headers.authorization = `Bearer ${res.data.jwt}`;
         if (this.props.onLoggedIn) {
           this.props.onLoggedIn(decoded);
         }

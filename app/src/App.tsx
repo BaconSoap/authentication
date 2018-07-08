@@ -1,10 +1,12 @@
 import * as React from 'react';
 import './App.css';
 
+import Axios from '../node_modules/axios';
 import { clearToken, DecodedJwt, decodeToken, isTokenValid, loadToken } from './authStorage';
 import { LoginForm } from './user/LoginForm';
 import { RegisterForm } from './user/RegisterForm';
 import { UserInfoBar } from './user/UserInfoBar';
+import { UserInfoPanel } from './user/UserInfoPanel';
 
 type AppState = {
   jwt: DecodedJwt | null;
@@ -20,6 +22,7 @@ class App extends React.Component<{}, AppState> {
     const token = loadToken();
     const decoded = decodeToken(token);
     if (isTokenValid(decoded)) {
+      Axios.defaults.headers.authorization = `Bearer ${token}`;
       this.setState({ jwt: decoded });
     }
   }
@@ -36,6 +39,7 @@ class App extends React.Component<{}, AppState> {
         </p>
         <RegisterForm />
         <LoginForm onLoggedIn={this.onLoggedIn} />
+        {this.state.jwt && <UserInfoPanel jwt={this.state.jwt} />}
       </div>
     );
   }
@@ -46,6 +50,7 @@ class App extends React.Component<{}, AppState> {
 
   private onLogOut = () => {
     clearToken();
+    Axios.defaults.headers.authorization = undefined;
     this.setState({ jwt: null });
   }
 }

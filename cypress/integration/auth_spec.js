@@ -106,7 +106,7 @@ describe('logging in', () => {
   });
 });
 
-describe.only('logging out', () => {
+describe('logging out', () => {
   it('works', () => {
     cy.visit('http://localhost:3000/');
 
@@ -128,14 +128,33 @@ describe.only('logging out', () => {
 
 describe('loading from stored jwt', () => {
   it('works', () => {
-    localStorage.setItem('login_jwt', jwt);
-    const email = JSON.parse(atob(jwt.split('.')[1])).email;
+    const { email } = preloadUser();
 
     cy.visit('http://localhost:3000/');
 
     verifyLoggedIn(email);
   });
 });
+
+describe('authenticated requests', () => {
+  it('works', () => {
+    const { email, sub } = preloadUser();
+
+    cy.visit('http://localhost:3000/');
+    cy.get('#load-user-info')
+      .click();
+
+    cy.get('#user-info')
+      .should('contain', email)
+      .and('contain', sub);
+  });
+});
+
+function preloadUser() {
+  localStorage.setItem('login_jwt', jwt);
+  const { email, sub } = JSON.parse(atob(jwt.split('.')[1]));
+  return { email, sub };
+}
 
 function verifyRegistered() {
   cy.get('#message')

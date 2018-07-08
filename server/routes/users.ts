@@ -4,7 +4,7 @@ import { User } from '../model';
 import { whereByEmail } from '../model/User';
 import { compareUsers, hashPassword } from '../util/hashPassword';
 import { createJwt } from '../util/jwtHelpers';
-import { getAsync, postValidatedAsync } from './routeUtils';
+import { getAsync, getAuthenticatedAsync, postValidatedAsync, UserFromJwt } from './routeUtils';
 
 const passwordErrorCreator = () => ({ message: 'Invalid password', type: 'string', path: ['password'] });
 
@@ -57,11 +57,17 @@ export const registerUsersRoutes = (app: Application) => {
   });
 
 
-  getAsync(app, '/api/users/:userId', async (req, res) => {
-    const userId = req.params.userId;
-    if (isNaN(parseInt(userId, 10))) {
+  getAuthenticatedAsync(app, '/api/users/:userId', async (req, res) => {
+    let userId = req.params.userId;
+    const requestUser = req.user as UserFromJwt;
+
+    if (isNaN(parseInt(userId, 10)) && userId !== 'me') {
       res.sendStatus(400);
       return;
+    }
+
+    if (userId === 'me') {
+      userId = requestUser.sub;
     }
 
     const user = await User.findById(userId);
@@ -71,7 +77,10 @@ export const registerUsersRoutes = (app: Application) => {
       return;
     }
 
-    res.send(user);
+    res.send({
+      email: user.email,
+      id: user.id,
+    });
   });
 };
 
