@@ -1,10 +1,10 @@
-const faker = require('faker');
+import { internet } from 'faker';
 
 let jwt = '';
 
 before(() => {
-  const email = faker.internet.email();
-  const password = faker.internet.password(24);
+  const email = internet.email();
+  const password = internet.password(24);
 
   cy.request('POST', 'http://localhost:3001/api/users', { email, password });
   cy.request('POST', 'http://localhost:3001/api/users/login', { email, password }).then(res => {
@@ -32,8 +32,8 @@ describe('registration', () => {
   });
 
   it('should not allow registering with an invalid email or short password', () => {
-    const email = faker.internet.email().replace('@', '');
-    const password = faker.internet.password(4);
+    const email = internet.email().replace('@', '');
+    const password = internet.password(4);
 
     cy.get('#register-email-input')
       .type(email);
@@ -178,8 +178,8 @@ function clickLogOut() {
 }
 
 function fillRegisterEmailPassword() {
-  const email = faker.internet.email();
-  const password = faker.internet.password(12);
+  const email = internet.email();
+  const password = internet.password(12);
   cy.get('#register-email-input')
     .type(email);
   cy.get('#register-password-input')
